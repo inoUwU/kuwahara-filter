@@ -1,7 +1,6 @@
 use eframe::egui::{self};
 use egui::FontFamily;
-use image::{DynamicImage, ImageFormat};
-use std::io::Cursor;
+use image::DynamicImage;
 
 fn main() -> eframe::Result<()> {
     // ウィンドウの設定
@@ -60,18 +59,10 @@ struct TargetImage {
 }
 
 // アプリケーションの状態を保持する構造体
+#[derive(Default)]
 struct MyApp {
     image: Option<TargetImage>,
     is_selected: bool,
-}
-
-impl Default for MyApp {
-    fn default() -> Self {
-        Self {
-            image: None,
-            is_selected: false,
-        }
-    }
 }
 
 // アプリケーションの描画とロジックを実装
@@ -99,13 +90,11 @@ impl eframe::App for MyApp {
                 }
             }
 
-            if self.is_selected {
-                if ui.button("convert kuwahara").clicked() {
-                    self.image = Some(TargetImage {
-                        raw_file_name: self.image.as_ref().unwrap().raw_file_name.clone(),
-                        processing_image: self.image.as_ref().unwrap().processing_image.clone(),
-                    });
-                }
+            if self.is_selected && ui.button("convert kuwahara").clicked() {
+                self.image = Some(TargetImage {
+                    raw_file_name: self.image.as_ref().unwrap().raw_file_name.clone(),
+                    processing_image: self.image.as_ref().unwrap().processing_image.clone(),
+                });
             }
 
             if self.image.is_none() {
